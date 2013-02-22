@@ -15,10 +15,12 @@
   var check_lock = false;
   var defaults = {
     interval: 250,
-    force_appear: false
+    force_appear: false,
+    viewport: window
   }
   var $window = $(window);
   var $document = $(document);
+  var $viewport = $(defaults.viewport);
 
   var $prior_appeared;
 
@@ -46,16 +48,16 @@
       return false;
     }
 
-    var window_left = $window.scrollLeft();
-    var window_top = $window.scrollTop();
+    var window_left = $viewport.scrollLeft();
+    var window_top = $viewport.scrollTop();
     var offset = $element.offset();
     var left = offset.left;
     var top = offset.top;
 
     if (top + $element.height() >= window_top &&
-        top - ($element.data('appear-top-offset') || 0) <= window_top + $window.height() &&
+        top - ($element.data('appear-top-offset') || 0) <= window_top + $viewport.height() &&
         left + $element.width() >= window_left &&
-        left - ($element.data('appear-left-offset') || 0) <= window_left + $window.width()) {
+        left - ($element.data('appear-left-offset') || 0) <= window_left + $viewport.width()) {
       return true;
     } else {
       return false;
@@ -76,7 +78,9 @@
           setTimeout(process, opts.interval);
         };
 
-        $(window).scroll(on_check).resize(on_check);
+        $viewport = $(opts.viewport);
+        $viewport.scroll(on_check);
+        $window.resize(on_check);
         check_binded = true;
       }
 
