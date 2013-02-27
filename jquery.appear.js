@@ -19,7 +19,6 @@
     viewport: window
   }
   var $window = $(window);
-  var $document = $(document);
   var $viewport = $(defaults.viewport);
 
   var $prior_appeared;
