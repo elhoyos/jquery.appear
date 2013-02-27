@@ -13,13 +13,13 @@
 
   var check_binded = false;
   var check_lock = false;
-  var settings = {
+  var defaults = {
     interval: 250,
     force_appear: false,
     viewport: window
   }
   var $window = $(window);
-  var $viewport = $(settings.viewport);
+  var $viewport = $(defaults.viewport);
 
   var $prior_appeared;
 
@@ -68,7 +68,7 @@
   $.fn.extend({
     // watching for element's appearance in browser viewport
     appear: function(options) {
-      $.extend(settings, options || {});
+      var opts = $.extend({}, defaults, options || {});
       var selector = this.selector || this;
       if (!check_binded) {
         var on_check = function() {
@@ -77,17 +77,17 @@
           }
           check_lock = true;
 
-          setTimeout(process, settings.interval);
+          setTimeout(process, opts.interval);
         };
 
-        $viewport = $(settings.viewport);
+        $viewport = $(opts.viewport);
         $viewport.scroll(on_check);
         $window.resize(on_check);
         check_binded = true;
       }
 
-      if (settings.force_process) {
-        setTimeout(process, settings.interval);
+      if (opts.force_process) {
+        setTimeout(process, opts.interval);
       }
       selectors.push(selector);
       return $(selector);
