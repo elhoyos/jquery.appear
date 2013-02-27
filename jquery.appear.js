@@ -42,6 +42,31 @@
     }
   }
 
+  function destroy(selector, opts) {
+    // remove the selector/element
+    var index = selectors.indexOf(selector);
+    if (index >= 0)
+      selectors.splice(index, 1);
+
+    // unbind events
+    if (selectors.length == 0) {
+      $viewport.unbind('scroll', on_check);
+      $window.unbind('resize', on_check);
+      check_binded = false;
+    }
+  }
+
+  // event hanlder for processing
+  var on_check = function(e) {
+    var interval = e.data
+    if (check_lock) {
+      return;
+    }
+    check_lock = true;
+
+    setTimeout(process, interval);
+  };
+
   // "appeared" custom filter
   $.expr[':']['appeared'] = function(element) {
     var $element = $(element);
@@ -68,28 +93,28 @@
   $.fn.extend({
     // watching for element's appearance in browser viewport
     appear: function(options) {
-      var opts = $.extend({}, defaults, options || {});
       var selector = this.selector || this;
-      if (!check_binded) {
-        var on_check = function() {
-          if (check_lock) {
-            return;
-          }
-          check_lock = true;
+      var opts = $.extend({}, defaults, options || {});
 
+      if (options === "destroy") {
+        destroy(selector, opts);
+
+      } else {
+
+        if (!check_binded) {
+          $viewport = $(opts.viewport);
+          $viewport.scroll(opts.interval, on_check);
+          $window.resize(opts.interval, on_check);
+          check_binded = true;
+        }
+
+        if (opts.force_process) {
           setTimeout(process, opts.interval);
-        };
+        }
 
-        $viewport = $(opts.viewport);
-        $viewport.scroll(on_check);
-        $window.resize(on_check);
-        check_binded = true;
+        selectors.push(selector);
       }
 
-      if (opts.force_process) {
-        setTimeout(process, opts.interval);
-      }
-      selectors.push(selector);
       return $(selector);
     }
   });
