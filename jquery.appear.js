@@ -29,11 +29,13 @@
         return $(this).is(':appeared');
       });
 
-      $appeared.trigger('appear', [$appeared]);
+      if ($appeared.length > 0)
+        $appeared.trigger('appear', [$appeared]);
 
       if ($prior_appeared) {
         var $disappeared = $prior_appeared.not($appeared);
-        $disappeared.trigger('disappear', [$disappeared]);
+        if ($disappeared.length > 0)
+          $disappeared.trigger('disappear', [$disappeared]);
       }
       $prior_appeared = $appeared;
     }
