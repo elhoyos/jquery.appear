@@ -76,7 +76,7 @@
 
     var window_left = $viewport.scrollLeft();
     var window_top = $viewport.scrollTop();
-    var offset = $element.offset();
+    var offset = $element.position();
     var left = offset.left;
     var top = offset.top;
 
