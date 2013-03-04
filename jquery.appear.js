@@ -12,7 +12,6 @@
   var selectors = [];
 
   var check_binded = false;
-  var check_lock = false;
   var defaults = {
     interval: 250,
     force_process: false,
@@ -23,8 +22,23 @@
 
   var $prior_appeared;
 
+  // a simple queue to ensure destroy and process are not called
+  // simultaneously
+  var queue = (function () {
+    var def;
+
+    function init() {
+      def = $.Deferred();
+      def.resolve(); // don't need to wait to execute processing
+
+      return def.promise();
+    }
+
+    return init();
+
+  })();
+
   function process() {
-    check_lock = false;
     for (var index in selectors) {
       var $appeared = $(selectors[index]).filter(function() {
         return $(this).is(':appeared');
@@ -59,12 +73,12 @@
   // event hanlder for processing
   var on_check = function(e) {
     var interval = e.data
-    if (check_lock) {
-      return;
-    }
-    check_lock = true;
 
-    setTimeout(process, interval);
+    setTimeout(function () {
+      queue.done(function () {
+        process()
+      })
+    }, interval);
   };
 
   // "appeared" custom filter
@@ -100,7 +114,9 @@
       var opts = $.extend({}, defaults, options || {});
 
       if (options === "destroy") {
-        destroy(selector, opts);
+        queue.done(function () {
+          destroy(selector, opts);
+        });
 
       } else {
 
@@ -112,7 +128,11 @@
         }
 
         if (opts.force_process) {
-          setTimeout(process, opts.interval);
+          setTimeout(function () {
+            queue.done(function () {
+              process()
+            })
+          }, opts.interval);
         }
 
         selectors.push(selector);
@@ -126,7 +146,9 @@
     // force elements's appearance check
     force_appear: function() {
       if (check_binded) {
-        process();
+        queue.done(function () {
+          process();
+        });
         return true;
       };
       return false;
