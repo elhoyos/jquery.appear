@@ -86,7 +86,7 @@
   function isLoaded ( selector ) {
     return 0 < $.map(selectors, function ( el ) {
       return el.is(selector) ? 1 : undefined;
-    });
+    }).length;
   }
 
   // "appeared" custom filter
