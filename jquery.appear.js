@@ -81,6 +81,14 @@
     }, interval);
   };
 
+  // determine if the given selector is being watched for
+  // appearance
+  function isLoaded ( selector ) {
+    return 0 < $.map(selectors, function ( el ) {
+      return el.is(selector) ? 1 : undefined;
+    });
+  }
+
   // "appeared" custom filter
   $.expr[':']['appeared'] = function(element) {
     var $element = $(element);
@@ -152,6 +160,8 @@
         return true;
       };
       return false;
-    }
+    },
+
+    loaded_appear: isLoaded
   });
 })(jQuery);
