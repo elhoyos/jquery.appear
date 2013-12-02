@@ -6,7 +6,7 @@
  *
  * https://github.com/morr/jquery.appear/
  *
- * Version: 0.3.1
+ * Version: 0.3.3
  */
 (function($) {
   var selectors = [];
@@ -39,7 +39,8 @@
   })();
 
   function process() {
-    for (var index in selectors) {
+    check_lock = false;
+    for (var index = 0; index < selectors.length; index++) {
       var $appeared = $(selectors[index]).filter(function() {
         return $(this).is(':appeared');
       });
