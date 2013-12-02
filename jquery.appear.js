@@ -45,13 +45,11 @@
         return $(this).is(':appeared');
       });
 
-      if ($appeared.length > 0)
-        $appeared.trigger('appear', [$appeared]);
+      $appeared.trigger('appear', [$appeared]);
 
       if ($prior_appeared) {
         var $disappeared = $prior_appeared.not($appeared);
-        if ($disappeared.length > 0)
-          $disappeared.trigger('disappear', [$disappeared]);
+        $disappeared.trigger('disappear', [$disappeared]);
       }
       $prior_appeared = $appeared;
     }
