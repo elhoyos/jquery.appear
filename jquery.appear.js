@@ -95,19 +95,26 @@
       return false;
     }
 
-    var viewport_scroll_left = $viewport.scrollLeft();
-    var viewport_scroll_top = $viewport.scrollTop();
-    var offset = $element.offset();
-    var viewport_offset = $viewport.offset();
-    var viewport_offset_left = viewport_offset.left || 0;
-    var viewport_offset_top = viewport_offset.top || 0;
-    var left = offset.left;
-    var top = offset.top;
+    var is_win = $viewport[0] === window;
 
-    if (top + $element.height() >= viewport_scroll_top &&
-        top - viewport_offset_top - ($element.data('appear-top-offset') || 0) <= viewport_scroll_top + $viewport.height() &&
-        left + $element.width() >= viewport_scroll_left &&
-        left - viewport_offset_left - ($element.data('appear-left-offset') || 0) <= viewport_scroll_left + $viewport.width()) {
+    var scroll_top = $viewport.scrollTop();
+    var scroll_left = $viewport.scrollLeft();
+
+    var viewport_offset = $viewport.offset();
+    var viewport_offset_top = is_win ? 0 : viewport_offset.top;
+    var viewport_offset_left = is_win ? 0 : viewport_offset.left;
+
+    var offset = $element.offset();
+    var top = is_win ? offset.top : Math.abs(viewport_offset_top - offset.top - scroll_top);
+    var left = is_win ? offset.left : Math.abs(viewport_offset_left - offset.left - scroll_left);
+
+    var extra_offset_top = $element.data('appear-top-offset') || 0;
+    var extra_offset_left = $element.data('appear-top-offset') || 0;
+
+    if (top + $element.height() >= scroll_top &&
+        top - extra_offset_top <= scroll_top + $viewport.height() &&
+        left + $element.width()  >= scroll_left &&
+        left - extra_offset_left <= scroll_left + $viewport.width()) {
       return true;
     } else {
       return false;
