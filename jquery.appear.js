@@ -4,9 +4,9 @@
  * Copyright (c) 2012 Andrey Sidorov
  * licensed under MIT license.
  *
- * https://github.com/morr/jquery.appear/
+ * https://github.com/elhoyos/jquery.appear/
  *
- * Version: 0.3.3
+ * Version: 0.3.3 (develop)
  */
 (function($) {
   var selectors = [];
