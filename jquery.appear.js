@@ -12,6 +12,7 @@
   var selectors = [];
 
   var check_binded = false;
+  var check_lock = false;
   var defaults = {
     interval: 250,
     force_process: false,
@@ -72,6 +73,13 @@
   // event hanlder for processing
   var on_check = function(e) {
     var interval = e.data
+
+    // process once when scrolling/resizing
+    if (check_lock) {
+      return;
+    }
+
+    check_lock = true;
 
     setTimeout(function () {
       queue.done(function () {
